@@ -1,0 +1,32 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@1.2
+
+jobs:
+  my_build: # This is the name of the job, feel free to change it to better match what you're trying to do!
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+          # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
+          # pip-dependency-file: test-requirements.txt  # if you have a different name for your requirements file, maybe one that combines your runtime and test requirements.
+      - run: python main.py
+  my_test:
+    docker:
+      - image: cimg/python:3.8
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+      - run: python  main-test.py
+
+workflows:
+  my_first_workflow:
+    jobs:
+      - my_build
+      - my_test:
+          requires:
+            - my_build
